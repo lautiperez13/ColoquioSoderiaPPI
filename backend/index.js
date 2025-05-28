@@ -1,3 +1,5 @@
+require("dotenv").config(); // para leer .env
+
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -8,14 +10,14 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Conexión a la base de datos MySQL
+// Conexión a la base de datos MySQL usando variables de entorno
 const db = mysql.createConnection({
-  host: "localhost", // Cambia esto si es diferente
-  user: "root", // Tu usuario de MySQL
-  password: "teal458", // Tu contraseña de MySQL
-  database: "bddiggory", // Cambia esto por tu base de datos
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
 });
-
 
 db.connect((err) => {
   if (err) {
@@ -25,9 +27,10 @@ db.connect((err) => {
   console.log("Conectado a la base de datos MySQL");
 });
 
-app.listen(3000, () => {
-  console.log("Servidor iniciado en el puerto 3000");
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Servidor iniciado en el puerto " + (process.env.PORT || 3000));
 });
+
 
 // Endpoint para agregar un nuevo cliente
 app.post("/clientes", (req, res) => {
